@@ -3,19 +3,25 @@ package com.hotel.models;
 import java.util.ArrayList;
 
 public class Room {
+    private int floor;
  private int roomNumber;
  private double pricePerNight;
  private boolean isAvailable;
  private ArrayList<Amenity> amenities;
  private RoomType roomType;
 
-public Room(int roomNumber,double pricePerNight,RoomType roomType){
+public Room(int roomNumber,double pricePerNight,RoomType roomType,int floor){
      this.roomNumber=roomNumber;
      this.pricePerNight=pricePerNight;
      this.isAvailable=true;
      this.roomType=roomType;
      this.amenities=new ArrayList<>();
+     this.floor=floor;
  }
+
+    public int getFloor() {
+        return floor;
+    }
 
     public double getPricePerNight() {
         return pricePerNight;
@@ -51,6 +57,10 @@ public Room(int roomNumber,double pricePerNight,RoomType roomType){
 
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
+    }
+
+    public void setFloor(int floor) {
+        this.floor = floor;
     }
 
     public void setAmenities(ArrayList<Amenity> amenities) {
