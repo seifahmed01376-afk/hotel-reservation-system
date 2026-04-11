@@ -4,7 +4,7 @@ public class Amenity {
     private int id;
     private String amenity;
 
-    Amenity(int id,String amenity){
+   public Amenity(int id,String amenity){
         this.id=id;
         this.amenity=amenity;
     }
