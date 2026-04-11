@@ -99,6 +99,10 @@ public class Guest {
     public void setRoomPreferences(RoomPreference roomPreferences) {
         this.roomPreferences = roomPreferences;
     }
+    @Override
+    public String toString(){
+        return "Guest id: "+id+"Guest Username: "+username;
+    }
 
    /* public void register(String username,String password,LocalDate dateOfBirth,String address,Gender gender){
 
