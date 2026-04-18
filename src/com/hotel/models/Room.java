@@ -1,5 +1,8 @@
 package com.hotel.models;
 
+import com.hotel.Exceptions.InvalidRoomDataException;
+import com.hotel.Exceptions.RoomNotAvailableException;
+
 import java.util.ArrayList;
 
 public class Room {
@@ -10,15 +13,50 @@ public class Room {
  private ArrayList<Amenity> amenities;
  private RoomType roomType;
 
-public Room(int roomNumber,double pricePerNight,RoomType roomType,int floor){
-     this.roomNumber=roomNumber;
-     this.pricePerNight=pricePerNight;
-     this.isAvailable=true;
-     this.roomType=roomType;
-     this.amenities=new ArrayList<>();
-     this.floor=floor;
- }
+public Room(int roomNumber,double pricePerNight,RoomType roomType,int floor) throws InvalidRoomDataException {
 
+    if (roomNumber <= 0) {
+        throw new InvalidRoomDataException("Room number must be positive");
+    }                                                               //Exceptions for incorrect price or room
+    if (pricePerNight <= 0) {
+        throw new InvalidRoomDataException("The price must be positive");
+    }
+
+    this.roomNumber = roomNumber;
+    this.pricePerNight = pricePerNight;
+    this.isAvailable = true;
+    this.roomType = roomType;
+    this.amenities = new ArrayList<>();
+    this.floor = floor;
+}
+
+
+public void bookRoom() throws RoomNotAvailableException {             // Exception for booked rooms
+    if (!isAvailable) {
+        throw new RoomNotAvailableException("Room number: " + roomNumber + "isn't available");
+    }
+    isAvailable = false;          //when guest write the correct room no and it's available
+}
+
+
+public void release(){
+    isAvailable = true;                //when guest check out
+}
+
+
+public void setPriceForNight(double pricePerNight) throws InvalidRoomDataException{
+    if (pricePerNight <= 0){
+        throw new InvalidRoomDataException("Room price per night can't be negative");
+    }
+    this.pricePerNight = pricePerNight;
+}
+
+public void setRoomNo(int roomNumber) throws RoomNotAvailableException {
+    if (roomNumber <= 0) {
+        throw new RoomNotAvailableException("The room number is wrong");
+    }
+    this.roomNumber = roomNumber;
+}
     public int getFloor() {
         return floor;
     }

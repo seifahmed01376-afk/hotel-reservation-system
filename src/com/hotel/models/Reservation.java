@@ -1,5 +1,6 @@
 package com.hotel.models;
 
+import com.hotel.Exceptions.ReservationNotFoundException;
 import com.hotel.enums.Reservationstatus;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -96,11 +97,22 @@ public class Reservation {
                 "\nStatus: " + status;
     }
 
-   public void confirm() {
+   public void confirm()throws ReservationNotFoundException {     // see if the res. is pending or not
         if (status != Reservationstatus.PENDING) {
-            throw new RuntimeException("الحجز مش في حالة PENDING!");
+            throw new ReservationNotFoundException("The reservation "+ id + " isn't on pending, cannot confirm");
         }
         status = Reservationstatus.CONFIRMED;
+    }
+
+    public void cancel() throws ReservationNotFoundException{
+        if (status == Reservationstatus.COMPLETED){
+            throw new ReservationNotFoundException("The reservation "+ id + " is already completed, can't cancel");
+        }
+        if (status == Reservationstatus.CANCELLED){
+            throw new ReservationNotFoundException("The reservation "+ id +" is  already cancelled");
+        }
+     status= Reservationstatus.CANCELLED;
+        room.release();
     }
  /*
     public void cancel() {

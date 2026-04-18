@@ -1,4 +1,5 @@
 package com.hotel.models;
+import com.hotel.Exceptions.InvalidRoomDataException;
 import com.hotel.enums.Role;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class Admin extends Staff {
         }
         return null;
     }
-    public static void addRoom(int roomNumber,double pricePerNight,RoomType roomType,int floor){
+    public static void addRoom(int roomNumber,double pricePerNight,RoomType roomType,int floor) throws InvalidRoomDataException {
         if(findRoomByRoomNumber(roomNumber)!=null) {
             System.out.println("Room: " + roomNumber + " Already exists");
             return;

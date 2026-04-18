@@ -2,6 +2,9 @@ package com.hotel.models;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import com.hotel.Exceptions.InvalidPaymentException;
+
+import com.hotel.Exceptions.InvalidPaymentException;
 import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
 
@@ -103,6 +106,16 @@ public class Guest {
     public String toString(){
         return "Guest id: "+id+"Guest Username: "+username;
     }
+
+
+
+    public void pay(double amount) throws InvalidPaymentException{
+        if (balance < amount){                                         // Exception for insufficient balance
+            throw new InvalidPaymentException("Insufficient amount of money, you  have " + balance + " and you have "+ amount);
+        }
+       balance -= amount;
+    }
+
 
    /* public void register(String username,String password,LocalDate dateOfBirth,String address,Gender gender){
 
