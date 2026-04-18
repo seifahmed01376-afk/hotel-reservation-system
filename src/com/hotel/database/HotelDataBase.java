@@ -52,14 +52,14 @@ public class HotelDataBase {
         room2.addAmenity(amenities.get(2));
         rooms.add(room2);
         Room room3 = new Room(167, 339.9, roomTypes.get(2),52 );
-        room3.addAmenity(amenities.get(0)); // WiFi
-        room3.addAmenity(amenities.get(1)); // TV
-        room3.addAmenity(amenities.get(2)); // Mini-bar
+        room3.addAmenity(amenities.get(0));
+        room3.addAmenity(amenities.get(1));
+        room3.addAmenity(amenities.get(2));
         rooms.add(room3);
         Room room4 = new Room(203, 439.9,  roomTypes.get(3), 27);
-        room4.addAmenity(amenities.get(0)); // WiFi
-        room4.addAmenity(amenities.get(1)); // TV
-        room4.addAmenity(amenities.get(2)); // Mini-bar
+        room4.addAmenity(amenities.get(0));
+        room4.addAmenity(amenities.get(1));
+        room4.addAmenity(amenities.get(2));
         rooms.add(room4);
 
 
@@ -121,6 +121,14 @@ public class HotelDataBase {
         }
         return null;
     }
+    public static Amenity findAmenityByName(String amenity){
+        for(Amenity a:amenities){
+           if(a.getAmenity().equals(amenity))
+               return a;
+        }
+        return null;
+
+    }
     public static Invoice findInvoiceById(int reservationId){
         int i=0;
         while(i<invoices.size()) {
@@ -138,6 +146,14 @@ public class HotelDataBase {
                 return roomTypes.get(i);
             }
             i++;
+        }
+        return null;
+    }
+    public static RoomType findRoomTypeByName(String type) {
+        for (RoomType rt : roomTypes) {
+            if (rt.getType().equalsIgnoreCase(type)) {
+                return rt;
+            }
         }
         return null;
     }

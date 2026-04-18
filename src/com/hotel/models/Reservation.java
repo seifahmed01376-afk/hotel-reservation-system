@@ -82,6 +82,19 @@ public class Reservation {
     public double calculateTotalCost() {
         return totalNights * room.getPricePerNight();
     }
+    @Override
+    public String toString() {
+        return "=== Reservation ===" +
+                "\nID: " + id +
+                "\nGuest: " + guest.getUsername() +
+                "\nRoom: " + room.getRoomNumber() +
+                "\nRoom Type: " + room.getRoomType().getType() +
+                "\nCheck-in: " + checkInDate +
+                "\nCheck-out: " + checkOutDate +
+                "\nTotal Nights: " + totalNights +
+                "\nTotal Cost: $" + calculateTotalCost() +
+                "\nStatus: " + status;
+    }
 
    public void confirm() {
         if (status != Reservationstatus.PENDING) {
