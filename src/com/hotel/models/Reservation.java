@@ -83,13 +83,13 @@ public class Reservation {
         return totalNights * room.getPricePerNight();
     }
 
-   /* public void confirm() {
+   public void confirm() {
         if (status != Reservationstatus.PENDING) {
             throw new RuntimeException("الحجز مش في حالة PENDING!");
         }
         status = Reservationstatus.CONFIRMED;
     }
-
+ /*
     public void cancel() {
         if (status == Reservationstatus.COMPLETED || status == Reservationstatus.CANCELLED) {
             throw new RuntimeException("مينفعش تلغي الحجز ده!");
