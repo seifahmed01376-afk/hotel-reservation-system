@@ -2,7 +2,6 @@ package com.hotel.database;
 import com.hotel.Exceptions.InvalidRoomDataException;
 import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
-import com.hotel.enums.Role;
 import com.hotel.models.*;
 import java.time.LocalDate;
 import java.util.ArrayList;

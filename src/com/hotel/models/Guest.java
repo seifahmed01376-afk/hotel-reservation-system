@@ -1,14 +1,13 @@
 package com.hotel.models;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import com.hotel.Exceptions.InvalidPaymentException;
 
 import com.hotel.Exceptions.InvalidPaymentException;
+
 import com.hotel.enums.Gender;
-import com.hotel.enums.PaymentMethod;
+import com.hotel.interfaces.payable;
 
-public class Guest {
+public class Guest implements payable {
     private static int idCounter=0;
     private int id;
     private String username;
@@ -109,8 +108,8 @@ public class Guest {
     }
 
 
-
-    public void pay(double amount) throws InvalidPaymentException{
+@Override
+    public void pay(double amount) throws InvalidPaymentException {
         if (balance < amount){                                         // Exception for insufficient balance
             throw new InvalidPaymentException("Insufficient amount of money, you  have " + balance + " and you have "+ amount);
         }

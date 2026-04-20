@@ -1,17 +1,37 @@
 package com.hotel.models;
 import com.hotel.Exceptions.InvalidRoomDataException;
 import com.hotel.enums.Role;
+import com.hotel.interfaces.managable;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static com.hotel.database.HotelDataBase.*;
 
 
-public class Admin extends Staff {
+public class Admin extends Staff implements managable {
 
     public Admin(int id, String username, String password, LocalDate dateOfBirth, int workingHours) {
         super(username, password, dateOfBirth, Role.ADMIN, workingHours);
     }
+    @Override
+    public void viewAll(){
+        viewAllAmenities();
+        viewAllGuests();
+        viewAllRooms();
+        viewAllReservations();
+        viewAllRoomTypes();
+    }
+    @Override
+    public void delete(int refNumber){
+        deleteAmenity(refNumber);
+        deleteRoom(refNumber);
+        deleteAmenity(refNumber);
+        deleteRoomType(refNumber);
+    }
+
+
+
 
 
     public static Admin login(String username,String password){
