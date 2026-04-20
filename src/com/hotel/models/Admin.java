@@ -10,7 +10,7 @@ import static com.hotel.database.HotelDataBase.*;
 public class Admin extends Staff {
 
     public Admin(int id, String username, String password, LocalDate dateOfBirth, int workingHours) {
-        super(id, username, password, dateOfBirth, Role.ADMIN, workingHours);
+        super(username, password, dateOfBirth, Role.ADMIN, workingHours);
     }
 
 
@@ -59,9 +59,8 @@ public class Admin extends Staff {
             return;
         }
 
-        int id=nextAmenityId();
-        Amenity toAdd=findAmenityById(id);
-        amenities.add(new Amenity(id,amenity));
+
+        amenities.add(new Amenity(amenity));
         System.out.println("Amenity added successfully!");
     }
     public static void deleteAmenity(int id){
@@ -88,8 +87,8 @@ public class Admin extends Staff {
             System.out.println("Room type already exists!");
             return;
         }
-        int id = nextRoomTypeID();
-        roomTypes.add(new RoomType(id, type));
+
+        roomTypes.add(new RoomType(type));
         System.out.println("Room type added successfully!");
     }
     public static void deleteRoomType(int id){

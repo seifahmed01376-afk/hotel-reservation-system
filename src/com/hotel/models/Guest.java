@@ -9,6 +9,7 @@ import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
 
 public class Guest {
+    private static int idCounter=0;
     private int id;
     private String username;
     private String password;
@@ -18,8 +19,8 @@ public class Guest {
     private Gender gender;
     private RoomPreference roomPreferences;
 
-    public Guest(int id, String username, String password, double balance, String address, LocalDate dateOfBirth, Gender gender, RoomPreference roomPreferences) {
-        this.id = id;
+    public Guest( String username, String password, double balance, String address, LocalDate dateOfBirth, Gender gender, RoomPreference roomPreferences) {
+        this.id = ++idCounter;
         this.username = username;
         this.password = password;
         this.balance = balance;
@@ -29,8 +30,8 @@ public class Guest {
         this.roomPreferences = roomPreferences;
     }
 
-    public Guest(int id, String username, String password, double balance, String address, LocalDate dateOfBirth, Gender gender) {
-        this.id = id;
+    public Guest( String username, String password, double balance, String address, LocalDate dateOfBirth, Gender gender) {
+        this.id = ++idCounter;
         this.username = username;
         this.password = password;
         this.balance = balance;

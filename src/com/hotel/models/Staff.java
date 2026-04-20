@@ -3,6 +3,7 @@ import com.hotel.enums.Role;
 import java.time.LocalDate;
 
 public abstract class Staff {
+    private static int idCounter=0;
     private int id;
     private String username;
     private String password;
@@ -10,8 +11,8 @@ public abstract class Staff {
     private Role role;
     private int workingHours;
 
-   public Staff(int id,String username,String password,LocalDate dateOfBirth,Role role,int workingHours){
-        this.id=id;
+   public Staff(String username,String password,LocalDate dateOfBirth,Role role,int workingHours){
+        this.id=++idCounter;
         this.password=password;
         this.username=username;
         this.dateOfBirth=dateOfBirth;

@@ -1,11 +1,12 @@
 package com.hotel.models;
 
 public class Amenity {
+    private static int idCounter=0;
     private int id;
     private String amenity;
 
-   public Amenity(int id,String amenity){
-        this.id=id;
+   public Amenity(String amenity){
+        this.id=++idCounter;
         this.amenity=amenity;
     }
 

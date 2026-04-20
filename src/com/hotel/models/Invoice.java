@@ -4,6 +4,7 @@ import com.hotel.enums.PaymentMethod;
 import java.time.LocalDate;
 
 public class Invoice {
+    private static int idCounter=0;
     private int id;
     private Reservation reservation;
     private double totalAmount;
@@ -11,8 +12,8 @@ public class Invoice {
     private LocalDate paymentDate;
     private boolean isPaid;
 
-    public Invoice(int id, Reservation reservation, double totalAmount, PaymentMethod paymentMethod) {
-        this.id = id;
+    public Invoice( Reservation reservation, double totalAmount, PaymentMethod paymentMethod) {
+        this.id = ++idCounter;
         this.reservation = reservation;
         this.totalAmount = totalAmount;
         this.paymentMethod = paymentMethod;

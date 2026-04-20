@@ -1,11 +1,12 @@
 package com.hotel.models;
 
 public class RoomType {
+    private static int idCounter=0;
     private int id;
     private String type;
 
-  public  RoomType(int id,String type){
-        this.id=id;
+  public  RoomType(String type){
+        this.id=++idCounter;
         this.type=type;
     }
 
