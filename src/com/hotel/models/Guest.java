@@ -1,10 +1,11 @@
 package com.hotel.models;
 
 import java.time.LocalDate;
-
+import java.util.ArrayList;
 import com.hotel.Exceptions.InvalidPaymentException;
-
+import com.hotel.database.HotelDataBase;
 import com.hotel.enums.Gender;
+import com.hotel.enums.PaymentMethod;
 import com.hotel.interfaces.payable;
 
 public class Guest implements payable {
