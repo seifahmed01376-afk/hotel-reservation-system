@@ -115,21 +115,5 @@ public class Reservation {
      status= Reservationstatus.CANCELLED;
         room.release();
     }
- /*
-    public void cancel() {
-        if (status == Reservationstatus.COMPLETED || status == Reservationstatus.CANCELLED) {
-            throw new RuntimeException("مينفعش تلغي الحجز ده!");
-        }
-        status = Reservationstatus.CANCELLED;
-        room.setAvailable(true);
-    }
-
-    public void complete() {
-        if (status != Reservationstatus.CONFIRMED) {
-            throw new RuntimeException("الحجز لازم يكون CONFIRMED الأول!");
-        }
-        status = Reservationstatus.COMPLETED;
-    }*/
-
 }
 
