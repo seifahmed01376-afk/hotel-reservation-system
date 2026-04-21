@@ -1,54 +1,63 @@
 package com.hotel.Validation;
-// Guest
-public class validator {
-    public void setUsername(String username) {
+import com.hotel.models.Guest;
+import com.hotel.Exceptions.InvalidPaymentException;
+import com.hotel.Exceptions.RoomNotAvailableException;
+import com.hotel.enums.Gender;
+import com.hotel.enums.PaymentMethod;
+import com.hotel.enums.Role;
+import com.hotel.models.Room;
+import com.hotel.models.RoomType;
+
+import java.time.LocalDate;// Guest
+public static class validator {
+    public void setUsername(String username,Guest guest) {
         if (username == null || username.isBlank())
             throw new IllegalArgumentException("Username cannot be empty!");
         if (username.length() < 3)
             throw new IllegalArgumentException("Username must be at least 3 characters!");
-        this.username = username;
+        guest.setUsername(username);
     }
 
-    public void setPassword(String password) {
+    public void setPassword(String password,Guest guest) {
         if (password == null || password.isBlank())
             throw new IllegalArgumentException("Password cannot be empty!");
         if (password.length() < 8)
             throw new IllegalArgumentException("Password must be at least 8 characters!");
-        this.password = password;
+        guest.setPassword(password);
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(double balance,Guest guest) {
         if (balance < 0)
             throw new IllegalArgumentException("Balance cannot be negative!");
-        this.balance = balance;
+        guest.setBalance(balance);
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth,Guest guest) {
         if (dateOfBirth == null)
             throw new IllegalArgumentException("Date of birth cannot be null!");
         if (dateOfBirth.isAfter(LocalDate.now()))
             throw new IllegalArgumentException("Date of birth cannot be in the future!");
         if (dateOfBirth.isAfter(LocalDate.now().minusYears(18)))
             throw new IllegalArgumentException("Guest must be at least 18 years old!");
-        this.dateOfBirth = dateOfBirth;
+        guest.setDateOfBirth(dateOfBirth);
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(Gender gender,Guest guest) {
         if (gender == null)
             throw new IllegalArgumentException("Gender cannot be null!");
-        this.gender = gender;
+        guest.setGender(gender);
     }
 
-    public void setAddress(String address) {
+    public void setAddress(String address,Guest guest) {
         if (address == null || address.isBlank())
             throw new IllegalArgumentException("Address cannot be empty!");
-        this.address = address;
+        guest.setAddress(address);
     }
 
 }
 //end  Guest
 // room
-public void setRoomNumber(int roomNumber) {
+public void setRoomNumber(int roomNumber, Room room) {
     if (roomNumber <= 0)
         throw new IllegalArgumentException("Room number must be positive!");
     this.roomNumber = roomNumber;

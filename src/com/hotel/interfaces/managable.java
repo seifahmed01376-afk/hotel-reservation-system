@@ -2,6 +2,8 @@ package com.hotel.interfaces;
 
 public interface managable {
     void viewAll();
-    void delete(int refNumber);
+    public void deleteRoom(int roomNumber);
+    public void deleteAmenity(int id);
+    public void deleteRoomType(int id);
 
 }

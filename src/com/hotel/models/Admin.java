@@ -11,7 +11,7 @@ import static com.hotel.database.HotelDataBase.*;
 
 public class Admin extends Staff implements managable {
 
-    public Admin(int id, String username, String password, LocalDate dateOfBirth, int workingHours) {
+    public Admin( String username, String password, LocalDate dateOfBirth, int workingHours) {
         super(username, password, dateOfBirth, Role.ADMIN, workingHours);
     }
     @Override
@@ -22,13 +22,7 @@ public class Admin extends Staff implements managable {
         viewAllReservations();
         viewAllRoomTypes();
     }
-    @Override
-    public void delete(int refNumber){
-        deleteAmenity(refNumber);
-        deleteRoom(refNumber);
-        deleteAmenity(refNumber);
-        deleteRoomType(refNumber);
-    }
+
 
 
 
@@ -53,7 +47,8 @@ public class Admin extends Staff implements managable {
         rooms.add(new Room(roomNumber,pricePerNight,roomType,floor));
         System.out.println("Room added successfully");
     }
-    public static void deleteRoom(int roomNumber) {
+    @Override
+    public  void deleteRoom(int roomNumber) {
         Room toRemove = findRoomByRoomNumber(roomNumber);
         if (toRemove == null) {
             System.out.println("Room not found!");
@@ -83,7 +78,8 @@ public class Admin extends Staff implements managable {
         amenities.add(new Amenity(amenity));
         System.out.println("Amenity added successfully!");
     }
-    public static void deleteAmenity(int id){
+    @Override
+    public void deleteAmenity(int id){
         Amenity toRemove=findAmenityById(id);
         if(toRemove==null){
             System.out.println("Amenity not found!");
@@ -111,7 +107,8 @@ public class Admin extends Staff implements managable {
         roomTypes.add(new RoomType(type));
         System.out.println("Room type added successfully!");
     }
-    public static void deleteRoomType(int id){
+    @Override
+    public void deleteRoomType(int id){
         RoomType toRemove=findRoomTypeById(id);
         if(toRemove==null){
             System.out.println("RoomType not found!");

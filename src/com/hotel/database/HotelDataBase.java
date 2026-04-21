@@ -75,7 +75,7 @@ public class HotelDataBase {
         guests.add(new Guest( "Abdo", "Abdo2007", 2000.0, "Newyork", LocalDate.of(1998, 4, 17), Gender.MALE, pref1));
         guests.add(new Guest( "sara", "sara123", 360, "paris", LocalDate.of(2001, 6, 17), Gender.FEMALE));
 
-        admins.add(new Admin(1, "Admin1", "Admin123", LocalDate.of(1993, 9, 21), 8));
+        admins.add(new Admin( "Admin1", "Admin123", LocalDate.of(1993, 9, 21), 8));
 
         receptionists.add(new Receptionist( "Receptionist1", "Receptionist123", LocalDate.of(1995, 7, 11), 12));
 
