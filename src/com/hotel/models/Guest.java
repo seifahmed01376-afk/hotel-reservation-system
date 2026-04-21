@@ -117,35 +117,54 @@ public class Guest implements payable {
     }
 
 
-   /* public void register(String username,String password,LocalDate dateOfBirth,String address,Gender gender){
-
+    public void register(String username,String password,LocalDate dateOfBirth,String address,Gender gender){
+        // هنا فيه Exceptions
     }
 
     public boolean login(String username,String password){
-
+        for( Guest g : HotelDataBase.guests){
+            if (g.getUsername().equals(username) && g.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ArrayList<Room> viewAvailableRooms(){
-
+        ArrayList<Room> availableRooms =new ArrayList<>();
+        for ( Room r : HotelDataBase.rooms) {
+            if (r.isAvailable()) {
+                availableRooms.add(r);
+            }
+        }
+        return availableRooms;
     }
 
-    public Reservation makeReservation (Room room,LocalDate checkIn,LocalDate checkOut){
+   /* public Reservation makeReservation (Room room,LocalDate checkIn,LocalDate checkOut){
+        // هنا فيه Exceptions
 
-    }
+    }*/
 
     public ArrayList<Reservation> viewReservations (){
+        ArrayList<Reservation> myReservations =new ArrayList<>();
+        for ( Reservation res : HotelDataBase.reservations) {
+            if (res.getGuest().getId() == this.id) {
+                myReservations.add(res);
+            }
+        }
+        return myReservations;
 
     }
 
     public void cancelReservation(int reservationId){
-
+        // هنا فيه Exceptions
     }
 
-    public Invoice checkOut(int reservationId){
-
-    }
+    /*public Invoice checkOut(int reservationId){
+        // هنا فيه Exceptions
+    }*/
 
     public void payInvoice(int invoiceId, PaymentMethod paymentMethod){
-
-    } */
+        // هنا فيه Exceptions
+    }
 }
