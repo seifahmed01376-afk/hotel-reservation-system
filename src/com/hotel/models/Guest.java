@@ -2,7 +2,11 @@ package com.hotel.models;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import com.hotel.Exceptions.InvalidDateRangeException;
 import com.hotel.Exceptions.InvalidPaymentException;
+import com.hotel.Exceptions.InvalidUserInformationException;
+import com.hotel.Exceptions.ReservationNotFoundException;
 import com.hotel.database.HotelDataBase;
 import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
@@ -118,8 +122,21 @@ public class Guest implements payable {
     }
 
 
-    public void register(String username,String password,LocalDate dateOfBirth,String address,Gender gender){
-        // هنا فيه Exceptions
+    public void register(String username,String password,LocalDate dateOfBirth,String address,Gender gender) throws InvalidUserInformationException {
+        if (username == null || username.isBlank()){
+            throw new InvalidUserInformationException("The username cannot be empty");
+        }
+        if (password == null || password.length() < 6){
+            throw new InvalidUserInformationException("The password cannot be less than 6 characters");
+        }
+        if (dateOfBirth == null || dateOfBirth.isAfter(LocalDate.now())){
+            throw new InvalidUserInformationException("This date of birth is invalid");
+        }
+        for (Guest g : HotelDataBase.guests){
+            if (g.getUsername().equals(username)){
+                throw new InvalidUserInformationException("The username " + username +" already exists");
+            }
+        }
     }
 
     public boolean login(String username,String password){
@@ -141,10 +158,16 @@ public class Guest implements payable {
         return availableRooms;
     }
 
-   /* public Reservation makeReservation (Room room,LocalDate checkIn,LocalDate checkOut){
-        // هنا فيه Exceptions
+   public Reservation makeReservation (Room room,LocalDate checkIn,LocalDate checkOut) throws ReservationNotFoundException, InvalidDateRangeException {
+       if (room == null || !room.isAvailable()) {
+           throw new ReservationNotFoundException("This room is not available");
+       }
+       if (checkIn == null || checkOut == null || !checkOut.isAfter(checkIn)) {
+           throw new InvalidDateRangeException("The check-out must be after the check-in");
+       }
+       return null;
+   }
 
-    }*/
 
     public ArrayList<Reservation> viewReservations (){
         ArrayList<Reservation> myReservations =new ArrayList<>();
@@ -157,15 +180,50 @@ public class Guest implements payable {
 
     }
 
-    public void cancelReservation(int reservationId){
-        // هنا فيه Exceptions
+    public void cancelReservation(int reservationId) throws ReservationNotFoundException{
+        Reservation found = null;
+        for (Reservation res : HotelDataBase.reservations){
+            if (res.getId() == reservationId && res.getGuest().getId() == this.id){
+                found = res;
+                break;
+            }
+        }
+
+        if (found == null){
+            throw new ReservationNotFoundException("This reservation with this ID: "+ reservationId+ " not found");
+        }
     }
 
-    /*public Invoice checkOut(int reservationId){
-        // هنا فيه Exceptions
-    }*/
+    public Invoice checkOut(int reservationId) throws ReservationNotFoundException{
+        Reservation found = null;
+        for (Reservation res : HotelDataBase.reservations) {
+            if (res.getId() == reservationId && res.getGuest().getId() == this.id) {
+                found = res;
+                break;
+            }
+        }
 
-    public void payInvoice(int invoiceId, PaymentMethod paymentMethod){
-        // هنا فيه Exceptions
+        if (found == null)
+            throw new ReservationNotFoundException("No reservation found with ID: " + reservationId);
+
+        return null;
+    }
+
+    public void payInvoice(int invoiceId, PaymentMethod paymentMethod) throws InvalidPaymentException{
+        Invoice found = null;
+        for (Invoice inv : HotelDataBase.invoices) {
+            if (inv.getId() == invoiceId) {
+                found = inv;
+                break;
+            }
+        }
+
+        if (found == null)
+            throw new InvalidPaymentException("No invoice found with ID: " + invoiceId);
+
+        if (found.isPaid())
+            throw new InvalidPaymentException("Invoice #" + invoiceId + " is already paid.");
+
+
     }
 }

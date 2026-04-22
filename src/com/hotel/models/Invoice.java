@@ -1,5 +1,8 @@
 package com.hotel.models;
 
+import com.hotel.Exceptions.InvalidInvoiceAmountException;
+import com.hotel.Exceptions.InvalidPaymentException;
+import com.hotel.Exceptions.InvalidRoomDataException;
 import com.hotel.enums.PaymentMethod;
 import java.time.LocalDate;
 
@@ -12,7 +15,18 @@ public class Invoice {
     private LocalDate paymentDate;
     private boolean isPaid;
 
-    public Invoice( Reservation reservation, double totalAmount, PaymentMethod paymentMethod) {
+    public Invoice( Reservation reservation, double totalAmount, PaymentMethod paymentMethod) throws InvalidInvoiceAmountException {
+
+       if ( reservation ==null){                                                       // new exceptions
+           throw new IllegalArgumentException("The reservation cannot be null.");
+       }
+       if (totalAmount <= 0){
+           throw new InvalidInvoiceAmountException("Not enough amount, must be greater than zero");
+       }
+       if (paymentMethod == null){
+           throw new IllegalArgumentException("Payment method cannot be null");
+       }
+
         this.id = ++idCounter;
         this.reservation = reservation;
         this.totalAmount = totalAmount;
@@ -41,7 +55,11 @@ public class Invoice {
         return totalAmount;
     }
 
-    public void setTotalAmount(double totalAmount) {
+    public void setTotalAmount(double totalAmount) throws InvalidInvoiceAmountException {
+     if(totalAmount <=0){
+         throw new InvalidInvoiceAmountException("The total amount cannot be less than or equal zero");
+     }
+
         this.totalAmount = totalAmount;
     }
 
@@ -69,15 +87,25 @@ public class Invoice {
         isPaid = paid;
     }
 
-    public void generateInvoice() {
-        totalAmount = reservation.calculateTotalCost();
-        paymentDate = LocalDate.now();
+    public void generateInvoice() throws InvalidInvoiceAmountException{
+        if (reservation ==null){
+            throw new IllegalArgumentException("Cannot generate invoice, as the reservation is null");
+        }
+        totalAmount= reservation.calculateTotalCost();        // exception for the generated invoice
+
+        if (totalAmount <=0){
+            throw new InvalidInvoiceAmountException("The calculated total amount is invalid: "+ totalAmount);
+        }
     }
 
-    public void markAsPaid(PaymentMethod paymentMethod) {
-        /* if (isPaid) {
-              throw new InvalidPaymentException("الفاتورة مدفوعة بالفعل!");
-        } */
+    public void markAsPaid(PaymentMethod paymentMethod) throws InvalidPaymentException {
+         if (isPaid){
+             throw new InvalidPaymentException("Invoice # "+id +" is already paid");
+         }
+         if (paymentMethod == null){
+             throw new InvalidPaymentException("The payment method cannot be  null");
+         }
+
         this.paymentMethod = paymentMethod;
         this.paymentDate = LocalDate.now();
         this.isPaid = true;

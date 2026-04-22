@@ -1,6 +1,9 @@
 package com.hotel.models;
 
+import com.hotel.Exceptions.InvalidDateRangeException;
+import com.hotel.Exceptions.InvalidReservationStatusException;
 import com.hotel.Exceptions.ReservationNotFoundException;
+import com.hotel.Exceptions.RoomNotAvailableException;
 import com.hotel.enums.Reservationstatus;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -15,7 +18,30 @@ public class Reservation {
     private Reservationstatus status;
     private int totalNights;
 
-    public Reservation( Guest guest, Room room, LocalDate checkInDate, LocalDate checkOutDate) {
+    public Reservation( Guest guest, Room room, LocalDate checkInDate, LocalDate checkOutDate) throws RoomNotAvailableException , InvalidDateRangeException {
+
+        if(guest ==null){
+            throw new IllegalArgumentException("The guest cannot be null");
+        }
+        if (room ==null){
+            throw new IllegalArgumentException("The room cannot be null");
+        }
+        if(!room.isAvailable()){
+            throw new RoomNotAvailableException("The room " + room.getRoomNumber()+"is not available");
+        }
+
+        if (checkInDate==null || checkOutDate ==null){
+            throw new InvalidDateRangeException("The check-in and check-out cannot be null");
+        }
+
+        if (!checkOutDate.isAfter(checkInDate)){
+            throw new InvalidDateRangeException("The check-out cannot be before the check-in");
+        }
+
+        if (checkInDate.isBefore(LocalDate.now())){
+            throw new InvalidDateRangeException("The check-in date cannot be in the past");
+        }
+
         this.id = ++idCounter;
         this.guest = guest;
         this.room = room;
@@ -82,7 +108,13 @@ public class Reservation {
     }
 
     public double calculateTotalCost() {
-        return totalNights * room.getPricePerNight();
+        if (room == null) {
+            throw new IllegalArgumentException("The room is null, cannot calculate the cost");
+        }
+        if (totalNights <=0){
+            throw new IllegalStateException("Total night must be greater than zero");
+        }
+        return totalNights * room.getRoomNumber();
     }
     @Override
     public String toString() {
@@ -105,12 +137,12 @@ public class Reservation {
         status = Reservationstatus.CONFIRMED;
     }
 
-    public void cancel() throws ReservationNotFoundException{
+    public void cancel() throws InvalidReservationStatusException {
         if (status == Reservationstatus.COMPLETED){
-            throw new ReservationNotFoundException("The reservation "+ id + " is already completed, can't cancel");
+            throw new InvalidReservationStatusException("The reservation "+ id + " is already completed, can't cancel");
         }
         if (status == Reservationstatus.CANCELLED){
-            throw new ReservationNotFoundException("The reservation "+ id +" is  already cancelled");
+            throw new InvalidReservationStatusException("The reservation "+ id +" is  already cancelled");
         }
      status= Reservationstatus.CANCELLED;
         room.release();
