@@ -11,12 +11,12 @@ public class Receptionist extends Staff {
         super(username, password, dateOfBirth, Role.RECEPTIONIST, workingHours);
     }
 
-   /* public void checkIn(int reservationId) {
+    public void checkIn(int reservationId) {
         // Exception
 
     }
 
-    public Invoice checkout() {
+   /* public Invoice checkout() {
         // Exception
 
     }*/
