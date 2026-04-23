@@ -4,6 +4,7 @@ import com.hotel.Exceptions.InvalidDateRangeException;
 import com.hotel.Exceptions.InvalidReservationStatusException;
 import com.hotel.Exceptions.ReservationNotFoundException;
 import com.hotel.Exceptions.RoomNotAvailableException;
+import com.hotel.Validation.validator;
 import com.hotel.enums.Reservationstatus;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -71,7 +72,8 @@ public class Reservation {
         return room;
     }
 
-    public void setRoom(Room room) {
+    public void setRoom(Room room) throws RoomNotAvailableException {
+        validator.validateRoom(room);
         this.room = room;
     }
 
@@ -80,6 +82,7 @@ public class Reservation {
     }
 
     public void setCheckInDate(LocalDate checkInDate) {
+        validator.validateCheckInDate(checkInDate);
         this.checkInDate = checkInDate;
     }
 
@@ -87,7 +90,8 @@ public class Reservation {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(LocalDate checkOutDate) {
+    public void setCheckOutDate(LocalDate  checkOutDate,LocalDate checkInDate) {
+        validator.validateCheckOutDate(checkOutDate,checkInDate);
         this.checkOutDate = checkOutDate;
     }
 
@@ -104,6 +108,7 @@ public class Reservation {
     }
 
     public void setTotalNights(int totalNights) {
+
         this.totalNights = totalNights;
     }
 

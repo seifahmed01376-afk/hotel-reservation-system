@@ -25,9 +25,6 @@ public class Admin extends Staff implements managable {
 
 
 
-
-
-
     public static Admin login(String username,String password){
         for(Admin a:admins){
             if(a.getUsername().equals(username)&&a.getPassword().equals(password))

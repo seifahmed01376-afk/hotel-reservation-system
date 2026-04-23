@@ -3,6 +3,7 @@ package com.hotel.models;
 import com.hotel.Exceptions.InvalidInvoiceAmountException;
 import com.hotel.Exceptions.InvalidPaymentException;
 import com.hotel.Exceptions.InvalidRoomDataException;
+import com.hotel.Validation.validator;
 import com.hotel.enums.PaymentMethod;
 import java.time.LocalDate;
 
@@ -56,10 +57,7 @@ public class Invoice {
     }
 
     public void setTotalAmount(double totalAmount) throws InvalidInvoiceAmountException {
-     if(totalAmount <=0){
-         throw new InvalidInvoiceAmountException("The total amount cannot be less than or equal zero");
-     }
-
+        validator.validateAmount(totalAmount);
         this.totalAmount = totalAmount;
     }
 
@@ -67,7 +65,8 @@ public class Invoice {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) throws InvalidPaymentException {
+        validator.validatePaymentMethod(paymentMethod);
         this.paymentMethod = paymentMethod;
     }
 
@@ -76,6 +75,7 @@ public class Invoice {
     }
 
     public void setPaymentDate(LocalDate paymentDate) {
+        validator.validatePaymentDate(paymentDate);
         this.paymentDate = paymentDate;
     }
 

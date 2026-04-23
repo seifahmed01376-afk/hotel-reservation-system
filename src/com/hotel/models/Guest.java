@@ -7,6 +7,7 @@ import com.hotel.Exceptions.InvalidDateRangeException;
 import com.hotel.Exceptions.InvalidPaymentException;
 import com.hotel.Exceptions.InvalidUserInformationException;
 import com.hotel.Exceptions.ReservationNotFoundException;
+import com.hotel.Validation.validator;
 import com.hotel.database.HotelDataBase;
 import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
@@ -57,6 +58,7 @@ public class Guest implements payable {
     }
 
     public void setUsername(String username) {
+        validator.validateUsername(username);
         this.username = username;
     }
 
@@ -65,6 +67,7 @@ public class Guest implements payable {
     }
 
     public void setPassword(String password) {
+        validator.validatePassword(password);
         this.password = password;
     }
 
@@ -73,6 +76,7 @@ public class Guest implements payable {
     }
 
     public void setBalance(double balance) {
+        validator.validateBalance(balance);
         this.balance = balance;
     }
 
@@ -81,6 +85,7 @@ public class Guest implements payable {
     }
 
     public void setAddress(String address) {
+        validator.validateAddress(address);
         this.address = address;
     }
 
@@ -89,6 +94,7 @@ public class Guest implements payable {
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
+        validator.validateDateOfBirth(dateOfBirth);
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -97,6 +103,7 @@ public class Guest implements payable {
     }
 
     public void setGender(Gender gender) {
+        validator.validateGender(gender);
         this.gender = gender;
     }
 
