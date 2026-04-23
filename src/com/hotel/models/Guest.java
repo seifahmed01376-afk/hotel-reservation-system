@@ -140,8 +140,8 @@ public class Guest implements payable {
     }
 
     public boolean login(String username,String password){
-        for( Guest g : HotelDataBase.guests){
-            if (g.getUsername().equals(username) && g.getPassword().equals(password)) {
+        for( Guest gst : HotelDataBase.guests){
+            if (gst.getUsername().equals(username) && gst.getPassword().equals(password)) {
                 return true;
             }
         }
@@ -150,9 +150,9 @@ public class Guest implements payable {
 
     public ArrayList<Room> viewAvailableRooms(){
         ArrayList<Room> availableRooms =new ArrayList<>();
-        for ( Room r : HotelDataBase.rooms) {
-            if (r.isAvailable()) {
-                availableRooms.add(r);
+        for ( Room rm : HotelDataBase.rooms) {
+            if (rm.isAvailable()) {
+                availableRooms.add(rm);
             }
         }
         return availableRooms;
