@@ -173,8 +173,9 @@ public class Main {
     }
     static void viewReservations(Guest guest){
         ArrayList<Reservation> reservations = guest.viewReservations();
-        if (reservations.isEmpty())
+        if (reservations.isEmpty()) {
             System.out.println("NO RESERVATIONS FOUND!!");
+        }
         else{
             for(Reservation r : reservations)
                 System.out.println(r);
