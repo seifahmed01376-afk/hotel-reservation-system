@@ -110,4 +110,8 @@ public class Invoice {
         this.paymentDate = LocalDate.now();
         this.isPaid = true;
     }
+    @Override
+    public String toString(){
+        return "Invoice ID: "+id+" TotalAmount: "+totalAmount;
+    }
 }

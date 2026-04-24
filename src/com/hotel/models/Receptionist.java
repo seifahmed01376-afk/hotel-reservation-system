@@ -1,6 +1,11 @@
 package com.hotel.models;
 
+import com.hotel.Exceptions.InvalidInvoiceAmountException;
+import com.hotel.Exceptions.InvalidReservationStatusException;
+import com.hotel.Exceptions.ReservationNotFoundException;
 import com.hotel.database.HotelDataBase;
+import com.hotel.enums.PaymentMethod;
+import com.hotel.enums.Reservationstatus;
 import com.hotel.enums.Role;
 
 import java.time.LocalDate;
@@ -11,15 +16,37 @@ public class Receptionist extends Staff {
         super(username, password, dateOfBirth, Role.RECEPTIONIST, workingHours);
     }
 
-    public void checkIn(int reservationId) {
-        // Exception
+    public void checkIn(int reservationId) throws ReservationNotFoundException, InvalidReservationStatusException {
+        Reservation found =HotelDataBase.findReservationById(reservationId);
+        if(found==null){
+            throw new ReservationNotFoundException("No Reservation found with id: "+reservationId);
+        }
+        if(found.getStatus()!=Reservationstatus.CONFIRMED){
+            throw new InvalidReservationStatusException("Your Reservation wasn't confirmed");
+        }
+        found.setStatus(Reservationstatus.CONFIRMED);
+        System.out.println("Guest: "+found.getGuest().getId()+" Has checked in room: "+found.getRoom().getRoomNumber());
 
     }
 
-   /* public Invoice checkout() {
-        // Exception
+    public Invoice checkout(int reservationId) throws ReservationNotFoundException, InvalidReservationStatusException, InvalidInvoiceAmountException {
+        Reservation found=HotelDataBase.findReservationById(reservationId);
+        if(found==null){
+            throw new ReservationNotFoundException("Can't find Reservation!");
+        }
+        if(found.getStatus()!=Reservationstatus.CONFIRMED){
+            throw new InvalidReservationStatusException("You didn't confirm your Reservation");
+        }
+        found.setStatus(Reservationstatus.COMPLETED);
+        found.getRoom().release();
+        Invoice invoice=new Invoice(found, found.calculateTotalCost(), PaymentMethod.CASH);
+        HotelDataBase.invoices.add(invoice);
+        System.out.println("Guest: "+found.getGuest().getId()+" Has checked out room: "+found.getRoom().getRoomNumber());
+        return invoice;
 
-    }*/
+
+
+    }
 
     public ArrayList<Reservation> viewTodayCheckOuts() {
         ArrayList<Reservation> today = new ArrayList<>();

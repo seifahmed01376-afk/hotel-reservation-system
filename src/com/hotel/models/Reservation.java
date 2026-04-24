@@ -119,7 +119,7 @@ public class Reservation {
         if (totalNights <=0){
             throw new IllegalStateException("Total night must be greater than zero");
         }
-        return totalNights * room.getRoomNumber();
+        return totalNights * room.getPricePerNight();
     }
     @Override
     public String toString() {
