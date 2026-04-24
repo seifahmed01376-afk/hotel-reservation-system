@@ -8,6 +8,7 @@ import com.hotel.database.HotelDataBase;
 import com.hotel.enums.Gender;
 import com.hotel.models.Guest;
 import com.hotel.models.Receptionist;
+import com.hotel.models.Room;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -59,9 +60,6 @@ public class Main {
                 System.out.println("invalid input");
                 return;
             }
-
-
-
         }
     }
     static void regesterGuest(){
@@ -127,8 +125,26 @@ public class Main {
 
     }
     static void guestDashboard(Guest guest){
-
-
+        System.out.println("WELCOME TO GUEST DASHBOARD!");
+        System.out.println("WHAT WOULD YOU LIKE TO DO?");
+        System.out.println("1-View available rooms");
+        System.out.println("2-Make reservation");
+        System.out.println("3-View reservation");
+        System.out.println("4-Cancel reservation");
+        String Input = scanner.nextLine().trim();
+        switch(Input){
+            case"1"-> ViewAvailableRooms();
+            case"2"-> MakeReservation();
+            case"3"-> viewReservations();
+            case"4" -> CancelReservation();
+            default -> {
+                System.out.println("invalid input");
+                return;
+            }
+        }
     }
-
+    static void ViewAvailableRooms(){}
+    static void MakeReservation(){}
+    static void viewReservations(){}
+    static void CancelReservation(){}
 }
