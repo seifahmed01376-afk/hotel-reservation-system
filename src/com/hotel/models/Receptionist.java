@@ -24,7 +24,7 @@ public class Receptionist extends Staff {
         if(found.getStatus()!=Reservationstatus.CONFIRMED){
             throw new InvalidReservationStatusException("Your Reservation wasn't confirmed");
         }
-        found.setStatus(Reservationstatus.CONFIRMED);
+        found.setStatus(Reservationstatus.CHECKED_IN);
         System.out.println("Guest: "+found.getGuest().getId()+" Has checked in room: "+found.getRoom().getRoomNumber());
 
     }
@@ -34,7 +34,7 @@ public class Receptionist extends Staff {
         if(found==null){
             throw new ReservationNotFoundException("Can't find Reservation!");
         }
-        if(found.getStatus()!=Reservationstatus.CONFIRMED){
+        if(found.getStatus()!=Reservationstatus.CHECKED_IN){
             throw new InvalidReservationStatusException("You didn't confirm your Reservation");
         }
         found.setStatus(Reservationstatus.COMPLETED);

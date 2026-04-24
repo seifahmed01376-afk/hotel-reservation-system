@@ -24,8 +24,8 @@ public class validator {
     public static void validatePassword(String password) {
         if (password == null || password.isBlank())
             throw new IllegalArgumentException("Password cannot be empty!");
-        if (password.length() < 8)
-            throw new IllegalArgumentException("Password must be at least 8 characters!");
+        if (password.length() < 6)
+            throw new IllegalArgumentException("Password must be at least 6 characters!");
     }
 
     public static void validateBalance(double balance) {

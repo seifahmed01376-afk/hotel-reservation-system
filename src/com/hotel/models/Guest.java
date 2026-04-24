@@ -140,26 +140,21 @@ public class Guest implements payable {
     }
 
 
-    public static Guest register(String username,String password,LocalDate dateOfBirth,String address,Gender gender,double balance) throws InvalidUserInformationException {
-        if (username == null || username.isBlank()){
-            throw new InvalidUserInformationException("The username cannot be empty");
-        }
-        if (password == null || password.length() < 6){
-            throw new InvalidUserInformationException("The password cannot be less than 6 characters");
-        }
-        if (dateOfBirth == null || dateOfBirth.isAfter(LocalDate.now())){
-            throw new InvalidUserInformationException("This date of birth is invalid");
-        }
+    public static Guest register(String username, String password, LocalDate dateOfBirth, String address, Gender gender, double balance) throws InvalidUserInformationException {
 
-        Guest found=HotelDataBase.findGuestByUsername(username);
+        validator.validateUsername(username);
+        validator.validatePassword(password);
+        validator.validateDateOfBirth(dateOfBirth);
+        validator.validateAddress(address);
+        validator.validateGender(gender);
+        validator.validateBalance(balance);
 
-            if (found!=null){
-                throw new InvalidUserInformationException("The username " + username +" already exists");
-            }
-            Guest newGuest=new Guest(username,password,balance,address,dateOfBirth,gender);
-            HotelDataBase.guests.add(newGuest);
-            return newGuest;
+        if (HotelDataBase.findGuestByUsername(username) != null)
+            throw new InvalidUserInformationException("The username " + username + " already exists");
 
+        Guest newGuest = new Guest(username, password, balance, address, dateOfBirth, gender);
+        HotelDataBase.guests.add(newGuest);
+        return newGuest;
     }
 
     public boolean login(String username,String password){
