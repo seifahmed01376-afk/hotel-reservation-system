@@ -1,18 +1,19 @@
 package com.hotel.main;
 
-import com.hotel.Exceptions.InvalidDateRangeException;
-import com.hotel.Exceptions.InvalidRoomDataException;
-import com.hotel.Exceptions.InvalidUserInformationException;
+import com.hotel.Exceptions.*;
 import com.hotel.Validation.validator;
 import com.hotel.database.HotelDataBase;
 import com.hotel.enums.Gender;
 import com.hotel.models.Guest;
 import com.hotel.models.Receptionist;
+import com.hotel.models.Reservation;
 import com.hotel.models.Room;
 
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -46,7 +47,7 @@ public class Main {
     }
     static void GuestMenu(){
         System.out.println("What would you like to do?");
-        System.out.println("1:Regester(new guest)");
+        System.out.println("1:Register(new guest)");
         System.out.println("2:Login");
         String choice=scanner.nextLine().trim();
         switch (choice){
@@ -117,7 +118,7 @@ public class Main {
 
         Guest found=HotelDataBase.findGuestByUsername(username);
         if(found!=null && found.login(username,password)) {
-            System.out.println("Login successfull");
+            System.out.println("Login successful");
             return found;
         }
         System.out.println("invalid username or password");
@@ -125,26 +126,69 @@ public class Main {
 
     }
     static void guestDashboard(Guest guest){
-        System.out.println("WELCOME TO GUEST DASHBOARD!");
+        System.out.println("===================================");
+        System.out.println("    WELCOME TO GUEST DASHBOARD!");
+        System.out.println("===================================");
         System.out.println("WHAT WOULD YOU LIKE TO DO?");
         System.out.println("1-View available rooms");
         System.out.println("2-Make reservation");
         System.out.println("3-View reservation");
         System.out.println("4-Cancel reservation");
+        System.out.println("5-Logout");
         String Input = scanner.nextLine().trim();
         switch(Input){
-            case"1"-> ViewAvailableRooms();
-            case"2"-> MakeReservation();
-            case"3"-> viewReservations();
-            case"4" -> CancelReservation();
+            case"1"-> ViewAvailableRooms(guest);
+            case"2"-> MakeReservation(guest);
+            case"3"-> viewReservations(guest);
+            case"4" -> CancelReservation(guest);
+            case"5" -> GuestMenu();
             default -> {
                 System.out.println("invalid input");
                 return;
             }
         }
     }
-    static void ViewAvailableRooms(){}
-    static void MakeReservation(){}
-    static void viewReservations(){}
-    static void CancelReservation(){}
+    static void ViewAvailableRooms(Guest guest){
+        ArrayList<Room> rooms = guest.viewAvailableRooms();
+        if (rooms.isEmpty()){
+            System.out.println("NO AVAILABLE ROOMS!");
+        }
+        else{
+            System.out.println("THIS IS THE AVAILABLE ROOMS");
+            for (Room r : rooms) System.out.println(r);
+        }
+    }
+    static void MakeReservation(Guest guest){
+        try{
+            Room room = HotelDataBase.rooms.getFirst();
+            LocalDate checkin = LocalDate.of(2026, 5, 1);
+            LocalDate checkout = LocalDate.of(2026, 5, 6);
+            Room res = guest.makeReservation(room, checkout, checkin).getRoom();
+
+            System.out.println("RESERVATION MADE SUCCESSFULLY " + res);
+        }
+        catch (ReservationNotFoundException | InvalidDateRangeException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    static void viewReservations(Guest guest){
+        ArrayList<Reservation> reservations = guest.viewReservations();
+        if (reservations.isEmpty())
+            System.out.println("NO RESERVATIONS FOUND!!");
+        else{
+            for(Reservation r : reservations)
+                System.out.println(r);
+        }
+    }
+    static void CancelReservation(Guest guest){
+        Scanner input = new Scanner(System.in);
+        try{
+            int reservation_ID = input.nextInt();
+            guest.cancelReservation(reservation_ID);
+            System.out.println("RESERVATION CANCELLED SUCCESSFULLY.");
+        }
+        catch (ReservationNotFoundException | InvalidReservationStatusException e){
+            System.out.println(e.getMessage());
+        }
+    }
 }
