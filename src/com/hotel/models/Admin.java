@@ -25,9 +25,6 @@ public class Admin extends Staff implements managable {
 
 
 
-
-
-
     public static Admin login(String username,String password){
         for(Admin a:admins){
             if(a.getUsername().equals(username)&&a.getPassword().equals(password))
@@ -37,12 +34,12 @@ public class Admin extends Staff implements managable {
     }
     public static void addRoom(int roomNumber,double pricePerNight,RoomType roomType,int floor) throws InvalidRoomDataException {
         if(findRoomByRoomNumber(roomNumber)!=null) {
-            System.out.println("Room: " + roomNumber + " Already exists");
-            return;
+            throw new InvalidRoomDataException("Room already exists!");
+
         }
         if(pricePerNight<=0) {
-            System.out.println("Price must be greater than zero!");
-            return;
+           throw new InvalidRoomDataException("PricePerNight can't be less than zero!");
+
         }
         rooms.add(new Room(roomNumber,pricePerNight,roomType,floor));
         System.out.println("Room added successfully");

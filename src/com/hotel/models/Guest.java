@@ -3,13 +3,12 @@ package com.hotel.models;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import com.hotel.Exceptions.InvalidDateRangeException;
-import com.hotel.Exceptions.InvalidPaymentException;
-import com.hotel.Exceptions.InvalidUserInformationException;
-import com.hotel.Exceptions.ReservationNotFoundException;
+import com.hotel.Exceptions.*;
+import com.hotel.Validation.validator;
 import com.hotel.database.HotelDataBase;
 import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
+import com.hotel.enums.Reservationstatus;
 import com.hotel.interfaces.payable;
 
 public class Guest implements payable {
@@ -23,7 +22,14 @@ public class Guest implements payable {
     private Gender gender;
     private RoomPreference roomPreferences;
 
+
     public Guest( String username, String password, double balance, String address, LocalDate dateOfBirth, Gender gender, RoomPreference roomPreferences) {
+        validator.validateUsername(username);
+        validator.validatePassword(password);
+        validator.validateBalance(balance);
+        validator.validateAddress(address);
+        validator.validateDateOfBirth(dateOfBirth);
+        validator.validateGender(gender);
         this.id = ++idCounter;
         this.username = username;
         this.password = password;
@@ -35,6 +41,12 @@ public class Guest implements payable {
     }
 
     public Guest( String username, String password, double balance, String address, LocalDate dateOfBirth, Gender gender) {
+        validator.validateUsername(username);
+        validator.validatePassword(password);
+        validator.validateBalance(balance);
+        validator.validateAddress(address);
+        validator.validateDateOfBirth(dateOfBirth);
+        validator.validateGender(gender);
         this.id = ++idCounter;
         this.username = username;
         this.password = password;
@@ -57,6 +69,7 @@ public class Guest implements payable {
     }
 
     public void setUsername(String username) {
+        validator.validateUsername(username);
         this.username = username;
     }
 
@@ -65,6 +78,7 @@ public class Guest implements payable {
     }
 
     public void setPassword(String password) {
+        validator.validatePassword(password);
         this.password = password;
     }
 
@@ -73,6 +87,7 @@ public class Guest implements payable {
     }
 
     public void setBalance(double balance) {
+        validator.validateBalance(balance);
         this.balance = balance;
     }
 
@@ -81,6 +96,7 @@ public class Guest implements payable {
     }
 
     public void setAddress(String address) {
+        validator.validateAddress(address);
         this.address = address;
     }
 
@@ -89,6 +105,7 @@ public class Guest implements payable {
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
+        validator.validateDateOfBirth(dateOfBirth);
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -97,6 +114,7 @@ public class Guest implements payable {
     }
 
     public void setGender(Gender gender) {
+        validator.validateGender(gender);
         this.gender = gender;
     }
 
@@ -122,21 +140,21 @@ public class Guest implements payable {
     }
 
 
-    public void register(String username,String password,LocalDate dateOfBirth,String address,Gender gender) throws InvalidUserInformationException {
-        if (username == null || username.isBlank()){
-            throw new InvalidUserInformationException("The username cannot be empty");
-        }
-        if (password == null || password.length() < 6){
-            throw new InvalidUserInformationException("The password cannot be less than 6 characters");
-        }
-        if (dateOfBirth == null || dateOfBirth.isAfter(LocalDate.now())){
-            throw new InvalidUserInformationException("This date of birth is invalid");
-        }
-        for (Guest g : HotelDataBase.guests){
-            if (g.getUsername().equals(username)){
-                throw new InvalidUserInformationException("The username " + username +" already exists");
-            }
-        }
+    public static Guest register(String username, String password, LocalDate dateOfBirth, String address, Gender gender, double balance) throws InvalidUserInformationException {
+
+        validator.validateUsername(username);
+        validator.validatePassword(password);
+        validator.validateDateOfBirth(dateOfBirth);
+        validator.validateAddress(address);
+        validator.validateGender(gender);
+        validator.validateBalance(balance);
+
+        if (HotelDataBase.findGuestByUsername(username) != null)
+            throw new InvalidUserInformationException("The username " + username + " already exists");
+
+        Guest newGuest = new Guest(username, password, balance, address, dateOfBirth, gender);
+        HotelDataBase.guests.add(newGuest);
+        return newGuest;
     }
 
     public boolean login(String username,String password){
@@ -165,7 +183,7 @@ public class Guest implements payable {
        if (checkIn == null || checkOut == null || !checkOut.isAfter(checkIn)) {
            throw new InvalidDateRangeException("The check-out must be after the check-in");
        }
-       return null;
+       return HotelDataBase.makeReservation(this ,room,checkIn,checkOut);
    }
 
 
@@ -180,7 +198,7 @@ public class Guest implements payable {
 
     }
 
-    public void cancelReservation(int reservationId) throws ReservationNotFoundException{
+    public void cancelReservation(int reservationId) throws ReservationNotFoundException, InvalidReservationStatusException {
         Reservation found = null;
         for (Reservation res : HotelDataBase.reservations){
             if (res.getId() == reservationId && res.getGuest().getId() == this.id){
@@ -192,9 +210,11 @@ public class Guest implements payable {
         if (found == null){
             throw new ReservationNotFoundException("This reservation with this ID: "+ reservationId+ " not found");
         }
+        HotelDataBase.cancelReservation(reservationId);
+
     }
 
-    public Invoice checkOut(int reservationId) throws ReservationNotFoundException{
+    public Invoice checkOut(int reservationId,PaymentMethod paymentMethod) throws ReservationNotFoundException, InvalidInvoiceAmountException {
         Reservation found = null;
         for (Reservation res : HotelDataBase.reservations) {
             if (res.getId() == reservationId && res.getGuest().getId() == this.id) {
@@ -206,23 +226,25 @@ public class Guest implements payable {
         if (found == null)
             throw new ReservationNotFoundException("No reservation found with ID: " + reservationId);
 
-        return null;
+        found.setStatus(Reservationstatus.COMPLETED);
+        found.getRoom().release();
+        Invoice invoice=new Invoice(found, found.calculateTotalCost(),paymentMethod);
+        HotelDataBase.invoices.add(invoice);
+
+        return invoice;
     }
 
-    public void payInvoice(int invoiceId, PaymentMethod paymentMethod) throws InvalidPaymentException{
-        Invoice found = null;
-        for (Invoice inv : HotelDataBase.invoices) {
-            if (inv.getId() == invoiceId) {
-                found = inv;
-                break;
-            }
-        }
+    public void payInvoice(int reservationId, PaymentMethod paymentMethod) throws InvalidPaymentException{
+        Invoice found=HotelDataBase.findInvoiceById(reservationId);
+
 
         if (found == null)
-            throw new InvalidPaymentException("No invoice found with ID: " + invoiceId);
+            throw new InvalidPaymentException("No invoice found with ID: " + reservationId);
 
         if (found.isPaid())
-            throw new InvalidPaymentException("Invoice #" + invoiceId + " is already paid.");
+            throw new InvalidPaymentException("Invoice #" + reservationId + " is already paid.");
+        this.pay(found.getTotalAmount());
+        found.markAsPaid(paymentMethod);
 
 
     }

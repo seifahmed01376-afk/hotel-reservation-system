@@ -190,13 +190,14 @@ public class HotelDataBase {
         return null;
     }
 
-    public static void makeReservation(Guest guest, Room room, LocalDate checkIn, LocalDate checkOut) {
+    public static Reservation makeReservation(Guest guest, Room room, LocalDate checkIn, LocalDate checkOut) {
         try {
             room.bookRoom();
             Reservation newRes = new Reservation(guest, room, checkIn, checkOut);
             newRes.confirm();
             reservations.add(newRes);
             System.out.println("Reservation successful! Room " + room.getRoomNumber() + " is booked.");
+            return newRes;
         } catch (RoomNotAvailableException e) {
             System.out.println("Booking failed: " + e.getMessage());
         } catch (InvalidDateRangeException e) {
@@ -204,6 +205,7 @@ public class HotelDataBase {
         } catch (ReservationNotFoundException e) {
             System.out.println("Confirmation failed: " + e.getMessage());
         }
+        return null;
     }
 
     public static void cancelReservation(int reservationId) {

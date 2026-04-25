@@ -2,6 +2,7 @@ package com.hotel.models;
 
 import com.hotel.Exceptions.InvalidRoomDataException;
 import com.hotel.Exceptions.RoomNotAvailableException;
+import com.hotel.Validation.validator;
 
 import java.util.ArrayList;
 
@@ -45,16 +46,13 @@ public void release(){
 
 
 public void setPriceForNight(double pricePerNight) throws InvalidRoomDataException{
-    if (pricePerNight <= 0){
-        throw new InvalidRoomDataException("Room price per night can't be negative");
-    }
+   validator.validatePrice(pricePerNight);
+
     this.pricePerNight = pricePerNight;
 }
 
 public void setRoomNo(int roomNumber) throws RoomNotAvailableException {
-    if (roomNumber <= 0) {
-        throw new RoomNotAvailableException("The room number is wrong");
-    }
+validator.validateRoomNumber(roomNumber);
     this.roomNumber = roomNumber;
 }
     public int getFloor() {
@@ -94,11 +92,12 @@ public void setRoomNo(int roomNumber) throws RoomNotAvailableException {
     }
 
     public void setRoomType(RoomType roomType) {
-        this.roomType = roomType;
+        validator.validateRoomType(roomType);
+    this.roomType = roomType;
     }
 
     public void setFloor(int floor) {
-        this.floor = floor;
+    this.floor = floor;
     }
 
     public void setAmenities(ArrayList<Amenity> amenities) {

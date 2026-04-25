@@ -1,6 +1,8 @@
 package com.hotel.Validation;
 
+import com.hotel.Exceptions.InvalidInvoiceAmountException;
 import com.hotel.Exceptions.InvalidPaymentException;
+import com.hotel.Exceptions.InvalidRoomDataException;
 import com.hotel.Exceptions.RoomNotAvailableException;
 import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
@@ -22,8 +24,8 @@ public class validator {
     public static void validatePassword(String password) {
         if (password == null || password.isBlank())
             throw new IllegalArgumentException("Password cannot be empty!");
-        if (password.length() < 8)
-            throw new IllegalArgumentException("Password must be at least 8 characters!");
+        if (password.length() < 6)
+            throw new IllegalArgumentException("Password must be at least 6 characters!");
     }
 
     public static void validateBalance(double balance) {
@@ -51,14 +53,14 @@ public class validator {
     }
 
     // ── Room Validation ───────────────────────────
-    public static void validateRoomNumber(int roomNumber) {
+    public static void validateRoomNumber(int roomNumber) throws RoomNotAvailableException {
         if (roomNumber <= 0)
-            throw new IllegalArgumentException("Room number must be positive!");
+            throw new RoomNotAvailableException("Room number must be positive!");
     }
 
-    public static void validatePrice(double price) {
+    public static void validatePrice(double price) throws InvalidRoomDataException {
         if (price <= 0)
-            throw new IllegalArgumentException("Price must be positive!");
+            throw new InvalidRoomDataException ("Price must be positive!");
     }
 
     public static void validateRoomType(RoomType roomType) {
@@ -89,9 +91,9 @@ public class validator {
     }
 
     // ── Invoice Validation ────────────────────────
-    public static void validateAmount(double amount) throws InvalidPaymentException {
+    public static void validateAmount(double amount) throws  InvalidInvoiceAmountException {
         if (amount <= 0)
-            throw new InvalidPaymentException("Amount must be positive!");
+            throw new InvalidInvoiceAmountException( "Amount must be positive!");
     }
 
     public static void validatePaymentMethod(PaymentMethod method) throws InvalidPaymentException {

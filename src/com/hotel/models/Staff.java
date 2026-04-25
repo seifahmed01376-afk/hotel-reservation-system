@@ -1,4 +1,5 @@
 package com.hotel.models;
+import com.hotel.Validation.validator;
 import com.hotel.enums.Role;
 import java.time.LocalDate;
 
@@ -57,10 +58,12 @@ public abstract class Staff {
     }
 
     public void setWorkingHours(int workingHours) {
+        validator.validateWorkingHours(workingHours);
         this.workingHours = workingHours;
     }
 
     public void setRole(Role role) {
+       validator.validateRole(role);
         this.role = role;
     }
 
