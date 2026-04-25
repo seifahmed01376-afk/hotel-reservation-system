@@ -135,6 +135,20 @@ public class HotelDataBase {
         }
         return null;
     }
+    public static Receptionist findReceptionistById(int id){
+        for(Receptionist re:receptionists){
+            if(re.getId()==id)
+                return re;
+        }
+        return null;
+    }
+    public static Receptionist findReceptionistByUsername(String username){
+        for(Receptionist re:receptionists) {
+            if (re.getUsername().equals(username))
+                return re;
+        }
+        return null;
+    }
 
     public static Amenity findAmenityById(int id) {
         int i = 0;
@@ -229,6 +243,7 @@ public class HotelDataBase {
         } catch (InvalidPaymentException e) {
             System.out.println("Payment failed: " + e.getMessage());
         }
+
     }
 
 }
