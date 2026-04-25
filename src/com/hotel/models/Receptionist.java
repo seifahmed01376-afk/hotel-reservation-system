@@ -16,6 +16,15 @@ public class Receptionist extends Staff {
         super(username, password, dateOfBirth, Role.RECEPTIONIST, workingHours);
     }
 
+    public boolean login(String username,String password){
+        for( Receptionist rpt : HotelDataBase.receptionists){
+            if (rpt.getUsername().equals(username) && rpt.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void checkIn(int reservationId) throws ReservationNotFoundException, InvalidReservationStatusException {
         Reservation found =HotelDataBase.findReservationById(reservationId);
         if(found==null){
