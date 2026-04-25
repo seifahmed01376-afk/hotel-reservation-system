@@ -9,6 +9,7 @@ import com.hotel.Exceptions.ReservationNotFoundException;
 import com.hotel.Exceptions.InvalidPaymentException;
 import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
+import com.hotel.enums.Reservationstatus;
 import com.hotel.models.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -87,6 +88,7 @@ public class HotelDataBase {
         // Create reservation
         try {
             Reservation res1 = new Reservation(guests.get(0), rooms.get(0), LocalDate.of(2026, 5, 1), LocalDate.of(2026, 5, 4));
+            rooms.get(0).bookRoom();
             res1.confirm();
             reservations.add(res1);
         } catch (InvalidDateRangeException e) {
@@ -192,7 +194,7 @@ public class HotelDataBase {
 
     public static Reservation makeReservation(Guest guest, Room room, LocalDate checkIn, LocalDate checkOut) {
         try {
-            room.bookRoom();
+
             Reservation newRes = new Reservation(guest, room, checkIn, checkOut);
             newRes.confirm();
             reservations.add(newRes);
@@ -228,4 +230,5 @@ public class HotelDataBase {
             System.out.println("Payment failed: " + e.getMessage());
         }
     }
+
 }

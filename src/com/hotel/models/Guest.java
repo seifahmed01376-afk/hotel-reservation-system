@@ -245,7 +245,20 @@ public class Guest implements payable {
             throw new InvalidPaymentException("Invoice #" + reservationId + " is already paid.");
         this.pay(found.getTotalAmount());
         found.markAsPaid(paymentMethod);
-
-
     }
+    public static boolean isRoomAvailableForDates(Room room, LocalDate checkIn, LocalDate checkOut) {
+        for (Reservation res : HotelDataBase.reservations) {
+            if (res.getRoom().getRoomNumber() == room.getRoomNumber()
+                    && res.getStatus() != Reservationstatus.CANCELLED
+                    && res.getStatus() != Reservationstatus.COMPLETED) {
+
+                // check if dates overlap
+                boolean overlaps = res.getCheckInDate().isBefore(checkOut)
+                        && res.getCheckOutDate().isAfter(checkIn);
+                if (overlaps) return false;
+            }
+        }
+        return true;
+    }
+
 }

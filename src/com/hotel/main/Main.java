@@ -16,6 +16,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static com.hotel.database.HotelDataBase.rooms;
+
 public class Main {
     static Scanner scanner = new Scanner(System.in);
     static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -31,6 +33,7 @@ public class Main {
             System.out.println("2:Admin");
             System.out.println("3:Receptionist");
             System.out.println("4:Exit");
+            System.out.print("Enter number: ");
             String menu=scanner.nextLine().trim();
             switch (menu){
                 case"1"->GuestMenu();
@@ -126,25 +129,30 @@ public class Main {
 
     }
     static void guestDashboard(Guest guest){
-        System.out.println("===================================");
-        System.out.println("    WELCOME TO GUEST DASHBOARD!");
-        System.out.println("===================================");
-        System.out.println("WHAT WOULD YOU LIKE TO DO?");
-        System.out.println("1-View available rooms");
-        System.out.println("2-Make reservation");
-        System.out.println("3-View reservation");
-        System.out.println("4-Cancel reservation");
-        System.out.println("5-Logout");
-        String Input = scanner.nextLine().trim();
-        switch(Input){
-            case"1"-> ViewAvailableRooms(guest);
-            case"2"-> MakeReservation(guest);
-            case"3"-> viewReservations(guest);
-            case"4" -> CancelReservation(guest);
-            case"5" -> GuestMenu();
-            default -> {
-                System.out.println("invalid input");
-                return;
+        while (true) {
+            System.out.println("===================================");
+            System.out.println("    WELCOME TO GUEST DASHBOARD!");
+            System.out.println("===================================");
+            System.out.println("WHAT WOULD YOU LIKE TO DO?");
+            System.out.println("1-View available rooms");
+            System.out.println("2-Make reservation");
+            System.out.println("3-View reservation");
+            System.out.println("4-Cancel reservation");
+            System.out.println("5-Logout");
+            String Input = scanner.nextLine().trim();
+            switch (Input) {
+                case "1" -> ViewAvailableRooms(guest);
+                case "2" -> MakeReservation(guest);
+                case "3" -> viewReservations(guest);
+                case "4" -> CancelReservation(guest);
+                case "5" -> {
+                    System.out.println("logged out!");
+                    return;
+                }
+                default -> {
+                    System.out.println("invalid input");
+                    return;
+                }
             }
         }
     }
@@ -159,18 +167,39 @@ public class Main {
         }
     }
     static void MakeReservation(Guest guest){
-        try{
-            Room room = HotelDataBase.rooms.getFirst();
-            LocalDate checkin = LocalDate.of(2026, 5, 1);
-            LocalDate checkout = LocalDate.of(2026, 5, 6);
-            Room res = guest.makeReservation(room, checkout, checkin).getRoom();
+            try {
+                ViewAvailableRooms(guest);
+                System.out.print("Enter room number: ");
+                int roomNumber = Integer.parseInt(scanner.nextLine().trim());
 
-            System.out.println("RESERVATION MADE SUCCESSFULLY " + res);
-        }
-        catch (ReservationNotFoundException | InvalidDateRangeException e){
-            System.out.println(e.getMessage());
-        }
+                Room room = HotelDataBase.findRoomByRoomNumber(roomNumber);
+                if (room == null) {
+                    System.out.println("Room not found.");
+                    return;
+                }
+
+                System.out.print("Check-in date (dd/MM/yyyy): ");
+                LocalDate checkIn = LocalDate.parse(scanner.nextLine().trim(), formatter);
+                System.out.print("Check-out date (dd/MM/yyyy): ");
+                LocalDate checkOut = LocalDate.parse(scanner.nextLine().trim(), formatter);
+
+                Reservation res = guest.makeReservation(room, checkIn, checkOut);
+                room.bookRoom();
+                System.out.println("Reservation made successfully!\n" + res);
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid room number, please enter a number.");
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Use dd/MM/yyyy");
+            } catch (ReservationNotFoundException | InvalidDateRangeException e) {
+                System.out.println("Reservation failed: " + e.getMessage());
+            } catch (RoomNotAvailableException e) {
+                throw new RuntimeException(e);
+            }
     }
+
+
+
     static void viewReservations(Guest guest){
         ArrayList<Reservation> reservations = guest.viewReservations();
         if (reservations.isEmpty()) {
@@ -182,9 +211,9 @@ public class Main {
         }
     }
     static void CancelReservation(Guest guest){
-        Scanner input = new Scanner(System.in);
         try{
-            int reservation_ID = input.nextInt();
+            System.out.print("Enter reservation Id: ");
+            int reservation_ID = Integer.parseInt(scanner.nextLine().trim());
             guest.cancelReservation(reservation_ID);
             System.out.println("RESERVATION CANCELLED SUCCESSFULLY.");
         }
