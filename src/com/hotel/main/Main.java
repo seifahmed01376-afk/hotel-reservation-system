@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import static com.hotel.database.HotelDataBase.rooms;
+import static com.hotel.models.Admin.*;
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
@@ -35,7 +36,7 @@ public class Main {
             String menu=scanner.nextLine().trim();
             switch (menu){
                 case"1"->GuestMenu();
-                case"2"-> System.out.println("coming soon");//AdminMenu();
+                case"2"-> AdminMenu();
                 case"3"-> System.out.println("coming soon");//ReceptionistMenu();
                 case"4"-> {
                     System.out.println("Thank you!\nSee you soon!");
@@ -283,4 +284,198 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
+
+    static Admin LoginAdmin(){
+        System.out.print("Enter username: ");
+        String username= scanner.nextLine().trim();
+        System.out.print("Enter password: ");
+        String password= scanner.nextLine().trim();
+
+        Admin found=HotelDataBase.findAdminByUsername(username);
+        if(found!=null && found.login(username,password)) {
+            System.out.println("login successful");
+            return found;
+        }
+        System.out.println("invalid username or password");
+        return null;
+    }
+    static void AdminMenu(){
+        System.out.println("Please login");
+        Admin admin=LoginAdmin();
+        if(admin==null)
+            return;
+        adminDashboard(admin);
+    }
+    static void adminDashboard(Admin admin) {
+        while (true) {
+            System.out.println("===================================");
+            System.out.println("       ADMIN DASHBOARD");
+            System.out.println("===================================");
+            System.out.println("1.  View all");
+            System.out.println("2.  Add room");
+            System.out.println("3.  Delete room");
+            System.out.println("4.  Update room");
+            System.out.println("5.  Add amenity");
+            System.out.println("6.  Delete amenity");
+            System.out.println("7.  Update amenity");
+            System.out.println("8.  Add room type");
+            System.out.println("9.  Delete room type");
+            System.out.println("10. Update room type");
+            System.out.println("11. Logout");
+            System.out.print("Choice: ");
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1"  -> admin.viewAll();
+                case "2"  -> addRoom();
+                case "3"  -> deleteRoom(admin);
+                case "4"  -> updateRoom();
+                case "5"  -> addAmenity();
+                case "6"  -> deleteAmenity(admin);
+                case "7"  -> updateAmenity();
+                case "8"  -> addRoomType();
+                case "9"  -> deleteRoomType(admin);
+                case "10" -> updateRoomType();
+                case "11" -> { System.out.println("Logged out."); return; }
+                default   -> System.out.println("Invalid choice.");
+            }
+        }
+    }
+    static void addRoom() {
+        try {
+            System.out.print("Enter room number: ");
+            int roomNumber = Integer.parseInt(scanner.nextLine().trim());
+            System.out.print("Enter price per night: ");
+            double price = Double.parseDouble(scanner.nextLine().trim());
+            System.out.print("Enter floor: ");
+            int floor = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.println("Available room types:");
+            for (RoomType rt : HotelDataBase.roomTypes)
+                System.out.println(rt);
+            System.out.print("Enter room type ID: ");
+            int typeId = Integer.parseInt(scanner.nextLine().trim());
+            RoomType type = HotelDataBase.findRoomTypeById(typeId);
+
+            if (type == null) {
+                System.out.println("Room type not found.");
+                return;
+            }
+
+            Admin.addRoom(roomNumber, price, type, floor);
+
+        } catch (InvalidRoomDataException e) {
+            System.out.println("Failed: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input, please enter a number.");
+        }
+    }
+
+    static void deleteRoom(Admin admin) {
+        try {
+            System.out.print("Enter room number to delete: ");
+            int roomNumber = Integer.parseInt(scanner.nextLine().trim());
+            admin.deleteRoom(roomNumber);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input, please enter a number.");
+        }
+    }
+
+    static void updateRoom() {
+        try {
+            System.out.print("Enter room number to update: ");
+            int roomNumber = Integer.parseInt(scanner.nextLine().trim());
+            System.out.print("Enter new price per night: ");
+            double price = Double.parseDouble(scanner.nextLine().trim());
+            System.out.println("Available room types:");
+            for (RoomType rt : HotelDataBase.roomTypes)
+                System.out.println(rt);
+            System.out.print("Enter new room type ID: ");
+            int typeId = Integer.parseInt(scanner.nextLine().trim());
+            RoomType type = HotelDataBase.findRoomTypeById(typeId);
+
+            if (type == null) {
+                System.out.println("Room type not found.");
+                return;
+            }
+
+            Admin.updateRoom(roomNumber, price, type, new ArrayList<>());
+            System.out.println("Room updated successfully.");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input, please enter a number.");
+        } catch (InvalidRoomDataException e){
+            System.out.println("Failed"+e.getMessage());
+        }
+
+    }
+
+    static void addAmenity() {
+        System.out.print("Enter amenity name: ");
+        String name = scanner.nextLine().trim();
+        Admin.addAmenity(name);
+        System.out.println("Amenity added successfully.");
+    }
+
+    static void deleteAmenity(Admin admin) {
+        try {
+            System.out.println("Available amenities:");
+            for (Amenity a : HotelDataBase.amenities)
+                System.out.println(a);
+            System.out.print("Enter amenity ID to delete: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+            admin.deleteAmenity(id);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input, please enter a number.");
+        }
+    }
+
+    static void updateAmenity() {
+        try {
+            System.out.println("Available amenities:");
+            for (Amenity a : HotelDataBase.amenities)
+                System.out.println(a);
+            System.out.print("Enter amenity ID to update: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+            System.out.print("Enter new amenity name: ");
+            String name = scanner.nextLine().trim();
+            Admin.updateAmenity(id, name);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input, please enter a number.");
+        }
+    }
+
+    static void addRoomType() {
+        System.out.print("Enter room type name: ");
+        String name = scanner.nextLine().trim();
+        Admin.addRoomType(name);
+    }
+
+    static void deleteRoomType(Admin admin) {
+        try {
+            System.out.println("Available room types:");
+            for (RoomType rt : HotelDataBase.roomTypes)
+                System.out.println(rt);
+            System.out.print("Enter room type ID to delete: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+            admin.deleteRoomType(id);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input, please enter a number.");
+        }
+    }
+
+    static void updateRoomType() {
+        try {
+            System.out.println("Available room types:");
+            for (RoomType rt : HotelDataBase.roomTypes)
+                System.out.println(rt);
+            System.out.print("Enter room type ID to update: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+            System.out.print("Enter new room type name: ");
+            String name = scanner.nextLine().trim();
+            Admin.updateRoomType(id, name);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input, please enter a number.");
+        }
+    }
+
 }

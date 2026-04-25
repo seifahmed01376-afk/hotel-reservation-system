@@ -28,15 +28,19 @@ public class HotelDataBase {
     public static int nextGuestID() {
         return (guests.size() + 1);
     }
+
     public static int nextReservationID() {
         return (reservations.size() + 1);
     }
+
     public static int nextAmenityId() {
         return (amenities.size() + 1);
     }
+
     public static int nextInvoice() {
         return (invoices.size() + 1);
     }
+
     public static int nextRoomTypeID() {
         return (roomTypes.size() + 1);
     }
@@ -107,6 +111,13 @@ public class HotelDataBase {
             System.out.println("Invoice creation failed: " + e.getMessage());
         }
     }
+    public static Admin findAdminByUsername(String username){
+        for(Admin a:admins){
+            if(a.getUsername().equals(username))
+                return a;
+        }
+        return null;
+    }
 
     public static Guest findGuestByUsername(String username) {
         for (Guest g : guests) {
@@ -135,15 +146,17 @@ public class HotelDataBase {
         }
         return null;
     }
-    public static Receptionist findReceptionistById(int id){
-        for(Receptionist re:receptionists){
-            if(re.getId()==id)
+
+    public static Receptionist findReceptionistById(int id) {
+        for (Receptionist re : receptionists) {
+            if (re.getId() == id)
                 return re;
         }
         return null;
     }
-    public static Receptionist findReceptionistByUsername(String username){
-        for(Receptionist re:receptionists) {
+
+    public static Receptionist findReceptionistByUsername(String username) {
+        for (Receptionist re : receptionists) {
             if (re.getUsername().equals(username))
                 return re;
         }
@@ -245,5 +258,6 @@ public class HotelDataBase {
         }
 
     }
+
 
 }

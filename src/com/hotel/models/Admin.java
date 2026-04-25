@@ -25,12 +25,12 @@ public class Admin extends Staff implements managable {
 
 
 
-    public static Admin login(String username,String password){
+    public static boolean login(String username,String password){
         for(Admin a:admins){
             if(a.getUsername().equals(username)&&a.getPassword().equals(password))
-                return a;
+                return true;
         }
-        return null;
+        return false;
     }
     public static void addRoom(int roomNumber,double pricePerNight,RoomType roomType,int floor) throws InvalidRoomDataException {
         if(findRoomByRoomNumber(roomNumber)!=null) {
@@ -54,11 +54,14 @@ public class Admin extends Staff implements managable {
         rooms.remove(toRemove);
         System.out.println("Room removed successfully!");
     }
-    public static void updateRoom(int roomNumber, double pricePerNight, RoomType roomType, ArrayList<Amenity> amenities) {
+    public static void updateRoom(int roomNumber, double pricePerNight, RoomType roomType, ArrayList<Amenity> amenities) throws InvalidRoomDataException {
         Room toUpdate = findRoomByRoomNumber(roomNumber);
         if (toUpdate == null) {
             System.out.println("Room not found!");
             return;
+        }
+        if(pricePerNight<=0) {
+            throw new InvalidRoomDataException("PricePerNight can't be less than zero!");
         }
         toUpdate.setPricePerNight(pricePerNight);
         toUpdate.setRoomType(roomType);
