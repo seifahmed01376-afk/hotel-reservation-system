@@ -4,10 +4,8 @@ import com.hotel.Exceptions.*;
 import com.hotel.Validation.validator;
 import com.hotel.database.HotelDataBase;
 import com.hotel.enums.Gender;
-import com.hotel.models.Guest;
-import com.hotel.models.Receptionist;
-import com.hotel.models.Reservation;
-import com.hotel.models.Room;
+import com.hotel.enums.PaymentMethod;
+import com.hotel.models.*;
 
 import java.sql.SQLOutput;
 import java.time.LocalDate;
@@ -138,14 +136,18 @@ public class Main {
             System.out.println("2-Make reservation");
             System.out.println("3-View reservation");
             System.out.println("4-Cancel reservation");
-            System.out.println("5-Logout");
+            System.out.println("5-Check out");
+            System.out.println("Pay Invoice");
+            System.out.println("7-Logout");
             String Input = scanner.nextLine().trim();
             switch (Input) {
                 case "1" -> ViewAvailableRooms(guest);
                 case "2" -> MakeReservation(guest);
                 case "3" -> viewReservations(guest);
                 case "4" -> CancelReservation(guest);
-                case "5" -> {
+                case "5" -> guestCheckout(guest);
+                case "6" -> payInvoice(guest);
+                case "7" -> {
                     System.out.println("logged out!");
                     return;
                 }
@@ -218,6 +220,66 @@ public class Main {
             System.out.println("RESERVATION CANCELLED SUCCESSFULLY.");
         }
         catch (ReservationNotFoundException | InvalidReservationStatusException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    static void guestCheckout(Guest guest) {
+        try {
+            viewReservations(guest);
+            System.out.print("Enter reservation ID: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.println("Payment Method:");
+            System.out.println("1. CASH");
+            System.out.println("2. CREDIT_CARD");
+            System.out.println("3. ONLINE");
+            System.out.print("Choice: ");
+            PaymentMethod method = switch (scanner.nextLine().trim()) {
+                case "1" -> PaymentMethod.CASH;
+                case "2" -> PaymentMethod.CREDIT_CARD;
+                case "3" -> PaymentMethod.ONLINE;
+                default -> throw new IllegalArgumentException("Invalid payment method.");
+            };
+
+            Invoice invoice = guest.checkOut(id, method);
+            if (invoice != null)
+                System.out.println("Checkout successful!\n" + invoice);
+
+        } catch (ReservationNotFoundException | InvalidInvoiceAmountException e) {
+            System.out.println("Checkout failed: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID, please enter a number.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    static void payInvoice(Guest guest) {
+        try {
+            viewReservations(guest);
+            System.out.print("Enter reservation ID: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.println("Payment Method:");
+            System.out.println("1. CASH");
+            System.out.println("2. CREDIT_CARD");
+            System.out.println("3. ONLINE");
+            System.out.print("Choice: ");
+            PaymentMethod method = switch (scanner.nextLine().trim()) {
+                case "1" -> PaymentMethod.CASH;
+                case "2" -> PaymentMethod.CREDIT_CARD;
+                case "3" -> PaymentMethod.ONLINE;
+                default -> throw new IllegalArgumentException("Invalid payment method.");
+            };
+
+            guest.payInvoice(id, method);
+            System.out.println("Payment successful! Remaining balance: $" + guest.getBalance());
+
+        } catch (InvalidPaymentException e) {
+            System.out.println("Payment failed: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID, please enter a number.");
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
