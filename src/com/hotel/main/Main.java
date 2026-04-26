@@ -141,7 +141,7 @@ public class Main {
             System.out.println("3-View reservation");
             System.out.println("4-Cancel reservation");
             System.out.println("5-Check out");
-            System.out.println("Pay Invoice");
+            System.out.println("6-Pay Invoice");
             System.out.println("7-Logout");
             String Input = scanner.nextLine().trim();
             switch (Input) {
@@ -157,7 +157,6 @@ public class Main {
                 }
                 default -> {
                     System.out.println("invalid input");
-                    return;
                 }
             }
         }
@@ -497,7 +496,7 @@ public class Main {
             System.out.print("Enter password: ");
             String password = scanner.nextLine().trim();
             System.out.println("Enter dateOfBirth: ");
-            LocalDate dob = LocalDate.parse(scanner.nextLine().trim());
+            LocalDate dob = LocalDate.parse(scanner.nextLine().trim(),formatter);
             System.out.print("Enter workingHours: ");
             int workingHours = Integer.parseInt(scanner.nextLine().trim());
 
@@ -556,6 +555,7 @@ public class Main {
             System.out.println("4-View today check-out");
             System.out.println("5-View all guests");
             System.out.println("6-View all reservations");
+            System.out.println("7-Logout");
             String choice = scanner.nextLine().trim();
             switch (choice) {
                 case "1" -> checkinreceptionist(receptionist);
@@ -564,6 +564,10 @@ public class Main {
                 case "4" -> viewtodaycheckout(receptionist);
                 case "5" -> viewallguests(receptionist);
                 case "6" -> viewallreservations();
+                case "7" -> {
+                    System.out.println("Logged out.");
+                    return;
+                }
                 default -> {
                     System.out.println("invalid input!");
                     return;
@@ -575,7 +579,7 @@ public class Main {
 
     static void checkinreceptionist(Receptionist receptionist){
         System.out.println("Enter reservation ID:");
-        int reservation_id = scanner.nextInt();
+        int reservation_id = Integer.parseInt(scanner.nextLine().trim());
         try{
             receptionist.checkIn(reservation_id);
         }
@@ -585,7 +589,7 @@ public class Main {
     }
     static void checkoutreceptionist(Receptionist receptionist){
         System.out.println("Enter reservation ID:");
-        int reservation_id = scanner.nextInt();
+        int reservation_id =Integer.parseInt(scanner.nextLine().trim());
         try{
             Invoice invoice = receptionist.checkout(reservation_id);
             System.out.println("Checkout Successful!");
