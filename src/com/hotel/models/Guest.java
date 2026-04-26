@@ -176,7 +176,7 @@ public class Guest implements payable {
         return availableRooms;
     }
 
-   public Reservation makeReservation (Room room,LocalDate checkIn,LocalDate checkOut) throws ReservationNotFoundException, InvalidDateRangeException {
+   public Reservation makeReservation (Room room,LocalDate checkIn,LocalDate checkOut) throws ReservationNotFoundException, InvalidDateRangeException, RoomNotAvailableException {
        if (room == null || !room.isAvailable()) {
            throw new ReservationNotFoundException("This room is not available");
        }

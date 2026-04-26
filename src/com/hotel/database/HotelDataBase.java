@@ -219,22 +219,14 @@ public class HotelDataBase {
         return null;
     }
 
-    public static Reservation makeReservation(Guest guest, Room room, LocalDate checkIn, LocalDate checkOut) {
-        try {
+    public static Reservation makeReservation(Guest guest, Room room, LocalDate checkIn, LocalDate checkOut)throws RoomNotAvailableException, InvalidDateRangeException, ReservationNotFoundException {
 
-            Reservation newRes = new Reservation(guest, room, checkIn, checkOut);
-            newRes.confirm();
-            reservations.add(newRes);
-            System.out.println("Reservation successful! Room " + room.getRoomNumber() + " is booked.");
-            return newRes;
-        } catch (RoomNotAvailableException e) {
-            System.out.println("Booking failed: " + e.getMessage());
-        } catch (InvalidDateRangeException e) {
-            System.out.println("Invalid dates: " + e.getMessage());
-        } catch (ReservationNotFoundException e) {
-            System.out.println("Confirmation failed: " + e.getMessage());
-        }
-        return null;
+
+        Reservation newRes = new Reservation(guest, room, checkIn, checkOut);
+        newRes.confirm();
+        reservations.add(newRes);
+
+        return newRes;
     }
 
     public static void cancelReservation(int reservationId) {
