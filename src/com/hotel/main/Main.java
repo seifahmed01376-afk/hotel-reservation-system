@@ -200,7 +200,7 @@ public class Main {
         } catch (ReservationNotFoundException | InvalidDateRangeException e) {
             System.out.println("Reservation failed: " + e.getMessage());
         } catch (RoomNotAvailableException e) {
-            throw new RuntimeException(e);
+            System.out.println("Room not available: " + e.getMessage());
         }
     }
 
