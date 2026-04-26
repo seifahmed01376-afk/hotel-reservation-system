@@ -52,9 +52,6 @@ public class Receptionist extends Staff {
         HotelDataBase.invoices.add(invoice);
         System.out.println("Guest: "+found.getGuest().getId()+" Has checked out room: "+found.getRoom().getRoomNumber());
         return invoice;
-
-
-
     }
 
     public ArrayList<Reservation> viewTodayCheckOuts() {

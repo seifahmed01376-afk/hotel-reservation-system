@@ -5,6 +5,7 @@ import com.hotel.Validation.validator;
 import com.hotel.database.HotelDataBase;
 import com.hotel.enums.Gender;
 import com.hotel.enums.PaymentMethod;
+import com.hotel.enums.Reservationstatus;
 import com.hotel.models.*;
 
 import java.sql.SQLOutput;
@@ -14,6 +15,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static com.hotel.database.HotelDataBase.receptionists;
 import static com.hotel.database.HotelDataBase.rooms;
 import static com.hotel.models.Admin.*;
 
@@ -37,7 +39,7 @@ public class Main {
             switch (menu){
                 case"1"->GuestMenu();
                 case"2"-> AdminMenu();
-                case"3"-> System.out.println("coming soon");//ReceptionistMenu();
+                case"3"-> ReceptionistMenu();//ReceptionistMenu();
                 case"4"-> {
                     System.out.println("Thank you!\nSee you soon!");
                     return;
@@ -477,5 +479,119 @@ public class Main {
             System.out.println("Invalid input, please enter a number.");
         }
     }
+    static void ReceptionistMenu(){
+        System.out.println("What would you like to do?");
+        System.out.println("1:Login");
+        System.out.println("2:Register(new receptionist)");
+        String choice=scanner.nextLine().trim();
+        switch (choice){
+            case"1"-> LoginReceptionist();
+            default -> {
+                System.out.println("invalid input");
+                return;
+            }
+        }
+    }
+    static Receptionist LoginReceptionist(){
+        System.out.println("Enter username:");
+        String username = scanner.nextLine().trim();
+        System.out.println("Enter Password:");
+        String password = scanner.nextLine().trim();
+
+        Receptionist found = HotelDataBase.findReceptionistByUsername(username);
+        if (found != null && found.login(username, password)){
+            System.out.println("Log in successful");
+            ReceptionistDashboard();
+            return found;
+        }
+        System.out.println("Invalid username or password!");
+        return null;
+    }
+    static void ReceptionistDashboard(Receptionist receptionist){
+        System.out.println("==========================================");
+        System.out.println("    WELCOME TO RECEPTIONIST DASHBOARD!");
+        System.out.println("==========================================");
+        System.out.println("What would you like to do?");
+        System.out.println("1-Check-In");
+        System.out.println("2-Check-Out");
+        System.out.println("3-View today check-in");
+        System.out.println("4-View today check-out");
+        System.out.println("5-View all guests");
+        System.out.println("6-View all reservations");
+        String choice = scanner.nextLine().trim();
+        switch (choice){
+            case "1"-> checkinreceptionist(receptionist);
+            case "2"-> checkoutreceptionist(receptionist);
+            case "3"-> viewtodaycheckin(receptionist);
+            case "4"-> viewtodaycheckout(receptionist);
+            case "5"-> viewallguests(receptionist);
+            case "6"-> viewallreservations();
+            default-> {
+                System.out.println("invalid input!");
+                return;
+            }
+        }
+    }
+    static void checkinreceptionist(Receptionist receptionist){
+        System.out.println("Enter reservation ID:");
+        int reservation_id = scanner.nextInt();
+        try{
+            receptionist.checkIn(reservation_id);
+        }
+        catch(ReservationNotFoundException | InvalidReservationStatusException e ){
+            System.out.println(e.getMessage());
+        }
+    }
+    static void checkoutreceptionist(Receptionist receptionist){
+        System.out.println("Enter reservation ID:");
+        int reservation_id = scanner.nextInt();
+        try{
+            Invoice invoice = receptionist.checkout(reservation_id);
+            System.out.println("Checkout Successful!");
+            System.out.println("Total amount = " + invoice.getTotalAmount());
+        }
+        catch(ReservationNotFoundException | InvalidReservationStatusException | InvalidInvoiceAmountException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    static void viewtodaycheckin(Receptionist receptionist){
+        ArrayList<Reservation> todaylist = receptionist.viewTodayCheckIns();
+        if(todaylist.isEmpty()){
+            System.out.println("No check-in today:(");
+            return;
+        }
+        System.out.println("Today's check-in:");
+        for(Reservation res : todaylist){
+            System.out.println("Reservation ID: " + res.getId() + ", Guest ID: " + res.getGuest().getId()
+                   + "Room: " + res.getRoom().getRoomNumber() + ", Status: " + res.getStatus() );
+        }
+    }
+    static void viewtodaycheckout(Receptionist receptionist){
+        ArrayList<Reservation> todaylist = receptionist.viewTodayCheckOuts();
+        if (todaylist.isEmpty()){
+            System.out.println("No check-out today:)");
+            return;
+        }
+        System.out.println("Today's check-out:");
+        for (Reservation res : todaylist){
+            System.out.println("Reservation ID: " + res.getId() + ", Guest ID: " + res.getGuest().getId()
+                    + "Room: " + res.getRoom().getRoomNumber() + ", Status: " + res.getStatus() );
+        }
+    }
+    static void viewallguests(Receptionist receptionist){
+        ArrayList<Guest> allguests = receptionist.viewAllGuests();
+        if (allguests.isEmpty()){
+            System.out.println("No Guests found!");
+            return;
+        }
+        System.out.println("All The Guests: ");
+        for (Guest g : allguests){
+            System.out.println("Guest ID: " + g.getId() + "User_Name: " + g.getUsername());
+        }
+    }
+
+
+
+
 
 }
