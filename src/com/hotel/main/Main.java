@@ -262,6 +262,16 @@ public class Main {
             viewReservations(guest);
             System.out.print("Enter reservation ID: ");
             int id = Integer.parseInt(scanner.nextLine().trim());
+            Invoice found = HotelDataBase.findInvoiceById(id);
+            if (found == null) {
+                System.out.println("No invoice found!");
+                System.out.println("Please checkout first (option 5) to generate an invoice.");
+                return;
+            }
+            if (found.isPaid()) {
+                System.out.println("This invoice is already paid!");
+                return;
+            }
 
             System.out.println("Payment Method:");
             System.out.println("1. CASH");
@@ -408,8 +418,8 @@ public class Main {
                 return;
             }
 
-            Admin.updateRoom(roomNumber, price, type, new ArrayList<>());
-            System.out.println("Room updated successfully.");
+            Room toUpdate = findRoomByRoomNumber(roomNumber);
+            Admin.updateRoom(roomNumber, price, type, toUpdate.getAmenities());
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid input, please enter a number.");
@@ -423,7 +433,6 @@ public class Main {
         System.out.print("Enter amenity name: ");
         String name = scanner.nextLine().trim();
         Admin.addAmenity(name);
-        System.out.println("Amenity added successfully.");
     }
 
     static void deleteAmenity(Admin admin) {

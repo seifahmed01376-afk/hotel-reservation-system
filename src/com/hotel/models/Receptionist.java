@@ -46,7 +46,7 @@ public class Receptionist extends Staff {
             throw new ReservationNotFoundException("Can't find Reservation!");
         }
         if(found.getStatus()!=Reservationstatus.CHECKED_IN){
-            throw new InvalidReservationStatusException("You didn't confirm your Reservation");
+            throw new InvalidReservationStatusException("Guest must be checked in before checkout");
         }
         found.setStatus(Reservationstatus.COMPLETED);
         found.getRoom().release();

@@ -111,6 +111,7 @@ validator.validateRoomNumber(roomNumber);
     }
     @Override
     public String toString(){
-    return "RoomNumber: "+roomNumber+"-Available: "+isAvailable;
+    return "RoomNumber: "+roomNumber+"-Available: "+isAvailable+"-Type: "+roomType;
+
     }
 }
