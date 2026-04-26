@@ -2,7 +2,9 @@ package com.hotel.models;
 
 import com.hotel.Exceptions.InvalidInvoiceAmountException;
 import com.hotel.Exceptions.InvalidReservationStatusException;
+import com.hotel.Exceptions.InvalidUserInformationException;
 import com.hotel.Exceptions.ReservationNotFoundException;
+import com.hotel.Validation.validator;
 import com.hotel.database.HotelDataBase;
 import com.hotel.enums.PaymentMethod;
 import com.hotel.enums.Reservationstatus;
@@ -81,6 +83,19 @@ public class Receptionist extends Staff {
     public ArrayList<Reservation> viewAllReservations() {
         return HotelDataBase.reservations;
     }
+    public static Receptionist Register(String username,String password,LocalDate dateOfBirth,int workingHours) throws InvalidUserInformationException {
+        validator.validateUsername(username);
+        validator.validatePassword(password);
+        validator.validateDateOfBirth(dateOfBirth);
+        validator.validateWorkingHours(workingHours);
+
+        if(HotelDataBase.findReceptionistByUsername(username)!=null)
+            throw new InvalidUserInformationException("Receptionist: "+username+" ID: "+HotelDataBase.findReceptionistByUsername(username).getId()+"\nAlready Exists");
+        Receptionist re= new Receptionist(username, password, dateOfBirth, workingHours);
+        HotelDataBase.receptionists.add(re);
+        return re;
+    }
+
 
     @Override
     public String toString() {
